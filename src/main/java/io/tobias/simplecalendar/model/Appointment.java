@@ -1,6 +1,8 @@
 package io.tobias.simplecalendar.model;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import java.util.Date;
@@ -10,6 +12,7 @@ import java.util.Date;
 public class Appointment {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     int id;
 
     @OneToOne
@@ -19,6 +22,14 @@ public class Appointment {
 
 
     public Appointment() {
+        //Empty on purpose for Hibernate
+
+    }
+
+    public Appointment(Room room, Date startTime, Date endTime) {
+        this.room = room;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
 

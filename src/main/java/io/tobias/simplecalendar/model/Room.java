@@ -1,6 +1,8 @@
 package io.tobias.simplecalendar.model;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 
@@ -8,9 +10,11 @@ import javax.persistence.Id;
 public class Room {
 
     public Room() {
+        //Empty on purpose for Hibernate
     }
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     int roomId;
 
     String name;
