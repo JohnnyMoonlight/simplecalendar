@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,8 +28,9 @@ public class AppointmentController {
 
     @Autowired
     RoomRepository roomRepository;
+    @CrossOrigin(origins = "*")
 
-    @PostMapping("/newAppointment")
+    @PostMapping("/createAppointment")
     public void createNewAppointment(@RequestBody JsonElement appointment) {
 
         Optional<Room> room = roomRepository.findById(appointment.getAsJsonObject().get("roomId").getAsInt());
@@ -42,8 +44,9 @@ public class AppointmentController {
 
     }
 
+    @CrossOrigin(origins = "*")
 
-    @GetMapping("/getAppointments")
+    @GetMapping("/allAppointments")
     public JsonElement getAppointments() {
 
         Iterable<Appointment> all = appointmentRepository.findAll();
