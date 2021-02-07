@@ -4,101 +4,71 @@
     <meta charset='utf-8' />
     <link href='css/main.css' rel='stylesheet' />
     <script src='js/main.js'></script>
-    <script>
-        let rooms;
-        let appointments;
-        let events = [];
-        let calendar;
+    <script src='js/js.js'></script>
 
-        async function initializeData() {
-            const roomsRequest = await fetch("http://127.0.0.1:8080/allRooms", {
-                "Accept": "application/json"
-            });
-            const roomsJson = await roomsRequest.text();
-            rooms = JSON.parse(roomsJson);
-            const appointmentsRequest = await fetch("http://127.0.0.1:8080/allAppointments", {
-                "Accept": "application/json"
-            });
-            const appointmentsJson = await appointmentsRequest.text();
-            appointments = JSON.parse(appointmentsJson);
-            parseAppointments(appointments);
-        }
-
-        class Event {
-            constructor(title, start, end) {
-                this.title = title,
-                    this.start = start,
-                    this.end = end
-            }
-
-        }
-
-        function parseAppointments(appointments) {
-            appointments.forEach(app => events.push({
-                "title": app.id,
-                "end": new Date(app.endTime).toISOString(),
-                "start": new Date(app.startTime).toISOString()
-            }))
-        }
-
-        function initCalendar() {
-
-            const calendarEl = document.getElementById('calendar');
-            calendar = new FullCalendar.Calendar(calendarEl, {
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek'
-                },
-                dateClick: function(info) {
-                    toggleForm(info.dateStr);
-                },
-                initialView: 'dayGridMonth',
-                events: events
-            });
-            calendar.render();
-        }
-
-        window.onload = async function() {
-            await initializeData();
-            initCalendar();
-
-        };
-
-        function toggleForm(dateStr) {
-
-            if (document.getElementById("overlay").style.display == "block") {
-                document.getElementById("overlay").style.display = "none";
-                document.getElementById("form").style.display = "none";
-            } else {
-                document.getElementById("overlay").style.display = "block";
-                document.getElementById("form").style.display = "block";
-            }
-        }
-
-    </script>
 </head>
 
 <body>
-    <div id="calendar"></div>
 
-    <div id="overlay">
-    </div>
-    <div id="form">
-        <div>
-            <label>Start:
-                <input id="startTime" type="datetime-local">
-            </label>
+    <div id="container">
+        <h1>Fancy Raumbelegungstool ZTL</h1>
+
+        <div id="calendar"></div>
+
+        <div onclick="toggleForm()" id="overlay">
+
         </div>
-        <div>
-            <label>Ende:
-                <input id="endTime" type="datetime-local">
-            </label> </div>
-        <button onclick="toggleForm()" type=" button">Termin anlegen</button>
+        <div id="form">
+            <div onclick="toggleForm()" id="closeIcon" class="button-icon">&#10060;
+            </div>
+            <div>
+                <label>Verantwortliche Person:
+                    <div><input required class="input-form" id="person" type="text"></div>
+                </label>
+            </div>
+            <div>
+                <label>Raum:
+                    <div><select required class="input-form" id="ressource" type=""></select></div>
+                </label>
+            </div>
+            <div>
+                <label>Start:<div>
+                        <input required class="input-form" id="startDate" type="date">
+                        <input required class="input-form" id="startTime" type="time">
+                    </div></label>
+            </div>
+            <div>
+                <label>Ende:<div>
+                        <input required class="input-form" id="endDate" type="date">
+                        <input required class="input-form" id="endTime" type="time"></div>
+                </label> </div>
+            <button onclick="createAppointment()" type="button">Termin anlegen</button>
+        </div>
     </div>
 </body>
 
 <style>
+    .container {
+        size: 100%;
+        width: 100%;
+
+    }
+
+    .fc-day-sat,
+    .fc-day-sun {
+        background-color: azure;
+    }
+
+    .fc-day-past {
+        background-color: lightgrey;
+    }
+
+    #calendar {
+
+        height: 60$;
+        width: 100%
+    }
+
     #overlay {
         display: none;
         background-color: lightgray;
@@ -110,17 +80,36 @@
         z-index: 5;
     }
 
+    .button-icon {
+        cursor: pointer;
+    }
+
+    .input-form {
+        cursor: pointer;
+    }
+
+    .input-form:invalid {
+        border-color: red;
+    }
+
+    .input-form:valid {
+        border-color: lightgreen;
+    }
+
+    #closeIcon {
+        position: absolute;
+        right: 0;
+
+    }
+
     #form {
         display: none;
         background-color: white;
-        width: 50%;
-        height: 50%;
+        width: 25%;
+        height: 25%;
         position: absolute;
-        left: 25%;
+        left: 37.5%;
         top: 25%;
         z-index: 6;
     }
-
-</style>
-
-</html>
+</style></html>
