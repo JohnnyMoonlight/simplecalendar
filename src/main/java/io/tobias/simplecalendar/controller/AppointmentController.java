@@ -53,7 +53,6 @@ public class AppointmentController {
     }
 
     @CrossOrigin(origins = "*")
-
     @GetMapping("/allAppointments")
     public JsonElement getAppointments() {
 

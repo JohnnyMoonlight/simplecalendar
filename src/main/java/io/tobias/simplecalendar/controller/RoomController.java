@@ -25,8 +25,8 @@ public class RoomController {
         Iterable<Room> all = roomRepository.findAll();
         return gson.toJson(all);
     }
-    @CrossOrigin(origins = "*")
 
+    @CrossOrigin(origins = "*")
     @PostMapping("/createRoom")
     public void createRoom(@RequestBody Room room) {
         roomRepository.save(room);
