@@ -3,7 +3,7 @@
         let events = [];
         let calendar;
 
-        const SERVER_URL = "http://localhost:8080/";
+        const SERVER_URL = "";
 
         const ROOMS_ID = "ressource";
 
