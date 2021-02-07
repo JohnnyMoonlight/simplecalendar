@@ -4,6 +4,7 @@ A simple calendar web app to manage rooms and appointments within this room.
 
 ## Project Setup
 Find informations about how to set up your development environment here.
+
 ###IntelliJ
 1. Clone the repository
 2. Open with IntelliJ, confirm the dialogue to import the gradle script and execute the build task
