@@ -7,6 +7,7 @@ import io.tobias.simplecalendar.repositories.RoomRepository;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -31,7 +32,7 @@ public class AppointmentController {
     @CrossOrigin(origins = "*")
 
     @PostMapping("/createAppointment")
-    public void createNewAppointment(@RequestBody JsonElement appointment) {
+    public JsonElement createNewAppointment(@RequestBody JsonElement appointment) {
 
         Optional<Room> room = roomRepository.findById(appointment.getAsJsonObject().get("roomId").getAsInt());
         Date startTime = gson.fromJson(appointment.getAsJsonObject().get("startTime"), Date.class);
@@ -40,7 +41,14 @@ public class AppointmentController {
         if (room.isPresent()) {
             Appointment newAppointment = new Appointment(room.get(), startTime, endTime);
             appointmentRepository.save(newAppointment);
+            return new JsonParser().parse(gson.toJson(appointmentRepository.findById(newAppointment.getId())));
         }
+        else {
+
+            JsonObject failedReponse = new JsonObject();
+            return failedReponse;
+        }
+
 
     }
 
