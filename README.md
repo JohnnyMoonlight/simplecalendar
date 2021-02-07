@@ -6,7 +6,7 @@ A simple calendar web app to manage rooms and appointments within this room.
 Find informations about how to set up your development environment here.
 ###IntelliJ
 1. Clone the repository
-2. Open with IntelliJ, confirm the dialogue to import the gradle script
+2. Open with IntelliJ, confirm the dialogue to import the gradle script and execute the build task
 3. Project Settings (Ctrl+Shift+Alt+S): Choose the default SDK for the project (Java 11, where ever it lives on your machine)
 
 4. Set up the run configurations:
