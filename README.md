@@ -6,7 +6,11 @@ A simple calendar web app to manage rooms and appointments within this room.
 Find a running demo [here](https://immense-retreat-76466.herokuapp.com/index.html "Demo")
 
 # Project Setup
-Find informations about how to set up your development environment here.
+Find informations about the setup etc here.
+
+## Frontend
+The frontend is being developed with vue.js. The calendar functionalities are provided by the vue library of FullCalendar.
+The code for the frontend is hosted in a private repository at the moment.
 
 ## IntelliJ
 1. Clone the repository
