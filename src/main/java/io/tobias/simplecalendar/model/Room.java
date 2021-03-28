@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import java.util.List;
 
 
 @Entity
@@ -18,6 +20,9 @@ public class Room {
     int roomId;
 
     String name;
+
+    @OneToMany(mappedBy="room")
+    List<Appointment> appointments;
 
 
     public int getRoomId() {
@@ -37,5 +42,15 @@ public class Room {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
+
+
+    public void setAppointments(List<Appointment> appointments) {
+        this.appointments = appointments;
     }
 }
