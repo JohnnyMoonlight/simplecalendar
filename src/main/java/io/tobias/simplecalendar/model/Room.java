@@ -53,4 +53,10 @@ public class Room {
     public void setAppointments(List<Appointment> appointments) {
         this.appointments = appointments;
     }
+
+
+    @Override
+    public String toString() {
+        return "Room{" + "roomId=" + roomId + ", name='" + name + '\'' + ", appointments=" + appointments + '}';
+    }
 }

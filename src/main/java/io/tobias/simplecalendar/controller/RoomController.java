@@ -53,6 +53,7 @@ public class RoomController {
     @CrossOrigin(origins = "*")
     @PostMapping("/createRoom")
     public void createRoom(@RequestBody Room room) {
+        System.out.println(room.toString());
         roomRepository.save(room);
     }
 
