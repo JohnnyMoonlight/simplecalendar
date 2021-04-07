@@ -17,6 +17,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,7 +47,7 @@ public class RoomController {
     @GetMapping("/allRooms")
     public JsonElement allRooms() {
         Iterable<Room> all = roomRepository.findAll();
-        System.out.println("Rooms have been retrieved");
+            System.out.println("Rooms have been retrieved");
         return new JsonParser().parse(gson.toJson(all));
     }
 
@@ -58,7 +59,7 @@ public class RoomController {
     }
 
     @CrossOrigin(origins = "*")
-    @GetMapping("/deleteRoom/{id}")
+    @DeleteMapping("/deleteRoom/{id}")
     public void  deleteRoom(@PathVariable int id){
         Optional<Room> byId = roomRepository.findById(id);
         if (byId.isPresent()){

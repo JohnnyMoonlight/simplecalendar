@@ -1,5 +1,6 @@
 package io.tobias.simplecalendar.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,7 +22,7 @@ public class Room {
 
     String name;
 
-    @OneToMany(mappedBy="room")
+    @OneToMany(mappedBy="room" , orphanRemoval = true, cascade = CascadeType.PERSIST)
     List<Appointment> appointments;
 
 
