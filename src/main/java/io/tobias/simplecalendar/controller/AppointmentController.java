@@ -1,13 +1,15 @@
 package io.tobias.simplecalendar.controller;
 
 import io.tobias.simplecalendar.model.Appointment;
+import io.tobias.simplecalendar.model.CalendarEntry;
 import io.tobias.simplecalendar.model.Room;
-import io.tobias.simplecalendar.repositories.AppointmentRepository;
+import io.tobias.simplecalendar.repositories.CalendarEntryRepository;
 import io.tobias.simplecalendar.repositories.RoomRepository;
+
+import static io.tobias.simplecalendar.service.AppointmentService.createCalendarEntriesFromAppointment;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.lang.reflect.Type;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -32,55 +35,63 @@ public class AppointmentController {
     private final String START_TIME = "startTime";
     private final String END_TIME = "endTime";
     private final String ROOM = "room";
+    private final String ROOM_ID = "roomId";
     private final String ID = "id";
     private final String NAME = "name";
+    private final String NUMBER_OF_RECURRENCES = "numberOfRecurrences";
+    private final String IS_RECURRING_EVENT = "isRecurringEvent";
+    private final String RECURRING_CYCLE = "recurringCycle";
 
-    Gson gson = new GsonBuilder()
+    final Gson gson = new GsonBuilder()
     .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-    .registerTypeAdapter(Appointment.class, new AppointmentSerializer())
+    .registerTypeAdapter(CalendarEntry.class, new CalendarEntrySerializer())
     .create();
 
     @Autowired
-    AppointmentRepository appointmentRepository;
+    CalendarEntryRepository calendarEntryRepository;
 
     @Autowired
     RoomRepository roomRepository;
 
     @CrossOrigin(origins = "*")
     @PostMapping("/createAppointment")
-    public JsonElement createNewAppointment(@RequestBody JsonElement appointment) {
+    public void createNewAppointment(@RequestBody JsonObject request) {
 
-        Optional<Room> room = roomRepository.findById(appointment.getAsJsonObject().get("roomId").getAsInt());
-        Date startTime = gson.fromJson(appointment.getAsJsonObject().get("startTime"), Date.class);
-        Date endTime = gson.fromJson(appointment.getAsJsonObject().get("endTime"), Date.class);
+        final JsonObject requestJson = request.getAsJsonObject();
 
-        if (room.isPresent()) {
-            Appointment newAppointment = new Appointment(room.get(), startTime, endTime);
-            appointmentRepository.save(newAppointment);
-            return new JsonParser().parse(gson.toJson(appointmentRepository.findById(newAppointment.getId())));
-        }
-        else {
+        final boolean isRecurringEvent = requestJson.get(IS_RECURRING_EVENT).getAsBoolean();
+        final String recurringCycle = requestJson.get(RECURRING_CYCLE).getAsString();
+        final int numberOfRecurrences = requestJson.get(NUMBER_OF_RECURRENCES).getAsInt();
+        Optional<Room> room = roomRepository.findById(requestJson.get(ROOM_ID).getAsInt());
+        Date startTime = gson.fromJson(requestJson.get(START_TIME), Date.class);
+        Date endTime = gson.fromJson(requestJson.get(END_TIME), Date.class);
 
-            JsonObject failedReponse = new JsonObject();
-            return failedReponse;
-        }
+        Appointment appointment = new Appointment(room.get(), startTime, endTime, isRecurringEvent, recurringCycle,  numberOfRecurrences);
+
+        final List<CalendarEntry> calendarEntriesFromAppointment = createCalendarEntriesFromAppointment(appointment);
+        calendarEntryRepository.saveAll(calendarEntriesFromAppointment);
 
 
     }
+
+
+
+
 
     @CrossOrigin(origins = "*")
     @GetMapping("/allAppointments")
     public JsonElement getAppointments() {
         System.out.println("Get Appointments has been called");
-        Iterable<Appointment> all = appointmentRepository.findAll();
-        return new JsonParser().parse(gson.toJson(all));
+        Iterable<CalendarEntry> all = calendarEntryRepository.findAll();
+        final String s = gson.toJson(all);
+        return new JsonParser().parse(s);
 
     }
 
-    private class AppointmentSerializer implements JsonSerializer<Appointment> {
+    private class CalendarEntrySerializer implements JsonSerializer<CalendarEntry> {
 
         @Override
-        public JsonElement serialize(Appointment src, Type typeOfSrc, JsonSerializationContext context) {
+        public JsonElement serialize(CalendarEntry src, Type typeOfSrc, JsonSerializationContext context) {
             final Date startTime = src.getStartTime();
             final Date endTime = src.getEndTime();
             final int id = src.getId();

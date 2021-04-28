@@ -1,8 +1,9 @@
 package io.tobias.simplecalendar.repositories;
 import io.tobias.simplecalendar.model.Appointment;
+import io.tobias.simplecalendar.model.CalendarEntry;
 
 import org.springframework.data.repository.CrudRepository;
 
 
-public interface AppointmentRepository extends CrudRepository<Appointment, Integer> {
+public interface CalendarEntryRepository extends CrudRepository<CalendarEntry, Integer> {
 }

@@ -2,6 +2,7 @@ package io.tobias.simplecalendar.model;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,8 +23,8 @@ public class Room {
 
     String name;
 
-    @OneToMany(mappedBy="room" , orphanRemoval = true, cascade = CascadeType.PERSIST)
-    List<Appointment> appointments;
+    @OneToMany(mappedBy="room" , orphanRemoval = true, cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    List<CalendarEntry> calendarEntry;
 
 
     public int getRoomId() {
@@ -46,18 +47,18 @@ public class Room {
     }
 
 
-    public List<Appointment> getAppointments() {
-        return appointments;
+    public List<CalendarEntry> getCalendarEntry() {
+        return calendarEntry;
     }
 
 
-    public void setAppointments(List<Appointment> appointments) {
-        this.appointments = appointments;
+    public void setCalendarEntry(List<CalendarEntry> calendarEntry) {
+        this.calendarEntry = calendarEntry;
     }
 
 
     @Override
     public String toString() {
-        return "Room{" + "roomId=" + roomId + ", name='" + name + '\'' + ", appointments=" + appointments + '}';
+        return "Room{" + "roomId=" + roomId + ", name='" + name + '\'' + ", appointments=" + calendarEntry + '}';
     }
 }

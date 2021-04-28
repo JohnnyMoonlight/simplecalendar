@@ -8,28 +8,80 @@ import javax.persistence.OneToOne;
 import java.util.Date;
 
 
-@Entity
 public class Appointment {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    int id;
 
-    @OneToOne
+    int id;
     Room room;
     Date startTime;
     Date endTime;
+    String recurringCycle;
+
+
+    public String getRecurringCycle() {
+        return recurringCycle;
+    }
+
+
+    public void setRecurringCycle(String recurringCycle) {
+        this.recurringCycle = recurringCycle;
+    }
+
+
+    boolean isDailyRecurringEvent;
+    boolean isWeeklyRecurringEvent;
+    boolean isMonthlyRecurringEvent;
+    int     numberOfRecurrences;
+
+    public boolean isDailyRecurringEvent() {
+        return isDailyRecurringEvent;
+    }
+
+
+    public void setDailyRecurringEvent(boolean dailyRecurringEvent) {
+        isDailyRecurringEvent = dailyRecurringEvent;
+    }
+
+
+    public boolean isMonthlyRecurringEvent() {
+        return isMonthlyRecurringEvent;
+    }
+
+
+    public void setMonthlyRecurringEvent(boolean monthlyRecurringEvent) {
+        isMonthlyRecurringEvent = monthlyRecurringEvent;
+    }
+
 
 
     public Appointment() {
         //Empty on purpose for Hibernate
-
     }
 
     public Appointment(Room room, Date startTime, Date endTime) {
         this.room = room;
         this.startTime = startTime;
         this.endTime = endTime;
+    }
+
+
+    public int getNumberOfRecurrences() {
+        return numberOfRecurrences;
+    }
+
+
+    public void setNumberOfRecurrences(int numberOfRecurrences) {
+        this.numberOfRecurrences = numberOfRecurrences;
+    }
+
+
+    public Appointment(Room room, Date startTime, Date endTime, boolean isWeeklyRecurringEvent, String recurringCycle, int numberOfRecurrences) {
+        this.room = room;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.recurringCycle = recurringCycle;
+        this.isWeeklyRecurringEvent = isWeeklyRecurringEvent;
+        this.numberOfRecurrences = numberOfRecurrences;
     }
 
 
@@ -55,6 +107,16 @@ public class Appointment {
 
     public Date getStartTime() {
         return startTime;
+    }
+
+
+    public boolean isWeeklyRecurringEvent() {
+        return isWeeklyRecurringEvent;
+    }
+
+
+    public void setWeeklyRecurringEvent(boolean weeklyRecurringEvent) {
+        isWeeklyRecurringEvent = weeklyRecurringEvent;
     }
 
 

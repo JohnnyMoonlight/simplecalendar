@@ -1,6 +1,7 @@
 package io.tobias.simplecalendar.controller;
 
 import io.tobias.simplecalendar.model.Appointment;
+import io.tobias.simplecalendar.model.CalendarEntry;
 import io.tobias.simplecalendar.model.Room;
 import io.tobias.simplecalendar.repositories.RoomRepository;
 
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -95,7 +97,7 @@ public class RoomController {
         @Override
         public JsonElement serialize(Room src, Type typeOfSrc, JsonSerializationContext context) {
 
-            final List<Appointment> appointments = src.getAppointments();
+            final List<CalendarEntry> calendarEntries = src.getCalendarEntry();
             final int roomId = src.getRoomId();
             final String name = src.getName();
 
@@ -105,11 +107,11 @@ public class RoomController {
 
             JsonArray appointmentsJson = new JsonArray();
 
-            for (Appointment appointment : appointments) {
+            for (CalendarEntry entry : calendarEntries) {
                 JsonObject appointmentJson = new JsonObject();
-                appointmentJson.addProperty(ID, appointment.getId());
-                appointmentJson.addProperty(START_TIME, gson.toJson(appointment.getStartTime()));
-                appointmentJson.addProperty(END_TIME, gson.toJson(appointment.getEndTime()));
+                appointmentJson.addProperty(ID, entry.getId());
+                appointmentJson.addProperty(START_TIME, gson.toJson(entry.getStartTime()));
+                appointmentJson.addProperty(END_TIME, gson.toJson(entry.getEndTime()));
                 appointmentsJson.add(appointmentJson);
             }
             room.add(APPOINTMENTS, appointmentsJson);
