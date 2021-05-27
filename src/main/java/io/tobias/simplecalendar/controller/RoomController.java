@@ -109,10 +109,12 @@ public class RoomController {
             final List<CalendarEntry> calendarEntries = src.getCalendarEntry();
             final int roomId = src.getRoomId();
             final String name = src.getName();
+            final String icon = src.getIcon();
 
             JsonObject room = new JsonObject();
             room.addProperty("roomId", roomId);
             room.addProperty("name", name);
+            room.addProperty("icon", icon);
 
             JsonArray appointmentsJson = new JsonArray();
 

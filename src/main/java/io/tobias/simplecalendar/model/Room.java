@@ -17,22 +17,35 @@ public class Room {
         //Empty on purpose for Hibernate
     }
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    int roomId;
+    Integer roomId;
 
     String name;
 
-    @OneToMany(mappedBy="room" , orphanRemoval = true, cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "room", orphanRemoval = true, cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     List<CalendarEntry> calendarEntry;
 
+    String icon;
 
-    public int getRoomId() {
+
+    public String getIcon() {
+        return icon;
+    }
+
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+
+    public Integer getRoomId() {
         return roomId;
     }
 
 
-    public void setRoomId(int roomId) {
+    public void setRoomId(Integer roomId) {
         this.roomId = roomId;
     }
 
