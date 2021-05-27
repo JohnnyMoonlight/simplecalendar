@@ -12,7 +12,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,8 +46,8 @@ public class RoomController {
     @GetMapping("/allRooms")
     public JsonElement allRooms() {
         Iterable<Room> all = roomRepository.findAll();
-            System.out.println("Rooms have been retrieved");
-        return new JsonParser().parse(gson.toJson(all));
+        System.out.println("Rooms have been retrieved");
+        return JsonParser.parseString(gson.toJson(all));
     }
 
     @CrossOrigin(origins = "*")
@@ -63,10 +62,10 @@ public class RoomController {
                 throw new IllegalArgumentException("Illegal input for created room. Room name must be set and not null.");
             }
             roomRepository.save(room);
-            response = new ResponseEntity<Room>(room, HttpStatus.CREATED);
+            response = new ResponseEntity<>(room, HttpStatus.CREATED);
         } catch (IllegalArgumentException e){
             e.printStackTrace();
-            response = new ResponseEntity<Room>(room, HttpStatus.UNPROCESSABLE_ENTITY);
+            response = new ResponseEntity<>(room, HttpStatus.UNPROCESSABLE_ENTITY);
         }
         return response;
     }
@@ -83,10 +82,9 @@ public class RoomController {
     @CrossOrigin(origins = "*")
     @GetMapping("/getRoomById/{id}")
     public JsonElement getRoomById(@PathVariable int id){
-        JsonElement response;
         Optional<Room> byId = roomRepository.findById(id);
         if (byId.isPresent()) {
-            return new JsonParser().parse(gson.toJson((byId.get())));
+            return JsonParser.parseString(gson.toJson(byId.get()));
         } else {
             JsonObject obj = new JsonObject();
             obj.add("msg", gson.toJsonTree("no room found"));
