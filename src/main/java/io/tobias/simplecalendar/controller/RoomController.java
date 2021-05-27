@@ -1,6 +1,5 @@
 package io.tobias.simplecalendar.controller;
 
-import io.tobias.simplecalendar.model.Appointment;
 import io.tobias.simplecalendar.model.CalendarEntry;
 import io.tobias.simplecalendar.model.Room;
 import io.tobias.simplecalendar.repositories.RoomRepository;
@@ -13,10 +12,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
+import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,10 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import java.io.IOException;
 import java.lang.reflect.Type;
-import java.text.DateFormat;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,9 +53,22 @@ public class RoomController {
 
     @CrossOrigin(origins = "*")
     @PostMapping("/createRoom")
-    public void createRoom(@RequestBody Room room) {
-        System.out.println(room.toString());
-        roomRepository.save(room);
+    public ResponseEntity<Room> createRoom(@RequestBody Room room) {
+        ResponseEntity<Room> response;
+        try {
+            if (room.getRoomId() != null) {
+                throw new IllegalArgumentException("Illegal input for created room. ID must not be dictated from client. ID is defined in backend.");
+            }
+            if (room.getName() == null || room.getName().length() == 0) {
+                throw new IllegalArgumentException("Illegal input for created room. Room name must be set and not null.");
+            }
+            roomRepository.save(room);
+            response = new ResponseEntity<Room>(room, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e){
+            e.printStackTrace();
+            response = new ResponseEntity<Room>(room, HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+        return response;
     }
 
     @CrossOrigin(origins = "*")
