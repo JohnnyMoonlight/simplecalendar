@@ -2,6 +2,7 @@ package io.tobias.simplecalendar.controller;
 
 import io.tobias.simplecalendar.model.CalendarEntry;
 import io.tobias.simplecalendar.model.Room;
+import io.tobias.simplecalendar.repositories.CalendarEntryRepository;
 import io.tobias.simplecalendar.repositories.RoomRepository;
 
 import com.google.gson.Gson;
@@ -34,6 +35,9 @@ public class RoomController {
 
     @Autowired
     RoomRepository roomRepository;
+
+    @Autowired
+    CalendarEntryRepository calendarEntryRepository;
 
     Gson gson = new GsonBuilder()
     .registerTypeAdapter(Room.class, new RoomSerializer())
@@ -75,7 +79,8 @@ public class RoomController {
     public void  deleteRoom(@PathVariable int id){
         Optional<Room> byId = roomRepository.findById(id);
         if (byId.isPresent()){
-            roomRepository.delete(byId.get());
+            final Room room = byId.get();
+            roomRepository.delete(room);
         }
     }
 
@@ -104,7 +109,7 @@ public class RoomController {
         @Override
         public JsonElement serialize(Room src, Type typeOfSrc, JsonSerializationContext context) {
 
-            final List<CalendarEntry> calendarEntries = src.getCalendarEntry();
+            final List<CalendarEntry> calendarEntries = src.getCalendarEntries();
             final int roomId = src.getRoomId();
             final String name = src.getName();
             final String icon = src.getIcon();

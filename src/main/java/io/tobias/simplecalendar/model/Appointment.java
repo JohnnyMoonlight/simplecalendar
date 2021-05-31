@@ -7,14 +7,20 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import java.util.Date;
 
-
+@Entity
 public class Appointment {
 
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     int id;
+
+    @OneToOne
     Room room;
+
     Date startTime;
+
     Date endTime;
+
     String recurringCycle;
 
 

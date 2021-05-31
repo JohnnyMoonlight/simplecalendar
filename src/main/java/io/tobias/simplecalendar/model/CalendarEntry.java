@@ -1,11 +1,13 @@
 package io.tobias.simplecalendar.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import java.util.Date;
 
 
@@ -16,9 +18,11 @@ public class CalendarEntry {
     @GeneratedValue(strategy = GenerationType.AUTO)
     int id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     Room room;
+
     Date startTime;
+
     Date endTime;
 
     public CalendarEntry() {

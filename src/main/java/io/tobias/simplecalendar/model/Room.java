@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -17,14 +18,13 @@ public class Room {
         //Empty on purpose for Hibernate
     }
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Integer roomId;
 
     String name;
 
-    @OneToMany(mappedBy = "room", orphanRemoval = true, cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     List<CalendarEntry> calendarEntry;
 
     String icon;
@@ -60,7 +60,7 @@ public class Room {
     }
 
 
-    public List<CalendarEntry> getCalendarEntry() {
+    public List<CalendarEntry> getCalendarEntries() {
         return calendarEntry;
     }
 
