@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 
-public class AppointmentServiceTest {
+class AppointmentServiceTest {
 
     private final int numberOfRecurrences = 2;
     AppointmentService appointmentService = new AppointmentService();
@@ -30,12 +30,12 @@ public class AppointmentServiceTest {
 
 
     @Test
-    public void testCreateNumberOfCreatedCalendarEntriesFromAppointment() {
+    void testCreateNumberOfCreatedCalendarEntriesFromAppointment() {
         assertEquals(numberOfRecurrences, appointmentService.createCalendarEntriesFromAppointment(testAppointment).size());
     }
 
     @Test
-    public void testCreatedCalendarEntry() {
+    void testCreatedCalendarEntry() {
         final List<CalendarEntry> calendarEntriesFromAppointment = appointmentService.createCalendarEntriesFromAppointment(testAppointment);
         final CalendarEntry calendarEntry = calendarEntriesFromAppointment.get(1);
         assertEquals(secondAppointment, calendarEntry.getStartTime());
