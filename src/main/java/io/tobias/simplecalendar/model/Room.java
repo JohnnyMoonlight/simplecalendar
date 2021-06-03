@@ -18,6 +18,14 @@ public class Room {
         //Empty on purpose for Hibernate
     }
 
+
+    public Room(Integer roomId, String name) {
+        //for testing purposes
+        this.roomId = roomId;
+        this.name = name;
+    }
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Integer roomId;
