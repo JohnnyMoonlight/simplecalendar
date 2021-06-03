@@ -5,7 +5,6 @@ import io.tobias.simplecalendar.model.CalendarEntry;
 import io.tobias.simplecalendar.model.Room;
 import io.tobias.simplecalendar.repositories.CalendarEntryRepository;
 import io.tobias.simplecalendar.repositories.RoomRepository;
-
 import static io.tobias.simplecalendar.service.AppointmentService.createCalendarEntriesFromAppointment;
 
 import com.google.gson.Gson;
@@ -32,26 +31,24 @@ import java.util.Optional;
 @RequestMapping("api")
 public class AppointmentController {
 
-    private final String START_TIME = "startTime";
-    private final String END_TIME = "endTime";
-    private final String ROOM = "room";
-    private final String ROOM_ID = "roomId";
-    private final String ID = "id";
-    private final String NAME = "name";
-    private final String NUMBER_OF_RECURRENCES = "numberOfRecurrences";
-    private final String IS_RECURRING_EVENT = "isRecurringEvent";
-    private final String RECURRING_CYCLE = "recurringCycle";
+    private static final String START_TIME            = "startTime";
+    private static final String END_TIME              = "endTime";
+    private static final String ROOM                  = "room";
+    private static final String ROOM_ID               = "roomId";
+    private static final String ID                    = "id";
+    private static final String NAME                  = "name";
+    private static final String NUMBER_OF_RECURRENCES = "numberOfRecurrences";
+    private static final String IS_RECURRING_EVENT    = "isRecurringEvent";
+    private static final String RECURRING_CYCLE       = "recurringCycle";
 
-    final Gson gson = new GsonBuilder()
-    .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-    .registerTypeAdapter(CalendarEntry.class, new CalendarEntrySerializer())
-    .create();
+    final Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").registerTypeAdapter(CalendarEntry.class, new CalendarEntrySerializer()).create();
 
     @Autowired
     CalendarEntryRepository calendarEntryRepository;
 
     @Autowired
     RoomRepository roomRepository;
+
 
     @CrossOrigin(origins = "*")
     @PostMapping("/createAppointment")
@@ -63,19 +60,19 @@ public class AppointmentController {
         final String recurringCycle = requestJson.get(RECURRING_CYCLE).getAsString();
         final int numberOfRecurrences = requestJson.get(NUMBER_OF_RECURRENCES).getAsInt();
         Optional<Room> room = roomRepository.findById(requestJson.get(ROOM_ID).getAsInt());
+        if (!room.isPresent()) {
+            throw new IllegalArgumentException("Cannot create appointment for non-existent room.");
+        }
+
         Date startTime = gson.fromJson(requestJson.get(START_TIME), Date.class);
         Date endTime = gson.fromJson(requestJson.get(END_TIME), Date.class);
 
-        Appointment appointment = new Appointment(room.get(), startTime, endTime, isRecurringEvent, recurringCycle,  numberOfRecurrences);
+        Appointment appointment = new Appointment(room.get(), startTime, endTime, isRecurringEvent, recurringCycle, numberOfRecurrences);
 
         final List<CalendarEntry> calendarEntriesFromAppointment = createCalendarEntriesFromAppointment(appointment);
         calendarEntryRepository.saveAll(calendarEntriesFromAppointment);
 
-
     }
-
-
-
 
 
     @CrossOrigin(origins = "*")
@@ -84,9 +81,10 @@ public class AppointmentController {
         System.out.println("Get Appointments has been called");
         Iterable<CalendarEntry> all = calendarEntryRepository.findAll();
         final String s = gson.toJson(all);
-        return new JsonParser().parse(s);
 
+        return JsonParser.parseString(s);
     }
+
 
     private class CalendarEntrySerializer implements JsonSerializer<CalendarEntry> {
 
