@@ -14,6 +14,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +32,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping("api")
 public class AppointmentController {
+
+    private Logger logger = LoggerFactory.getLogger(AppointmentController.class);
 
     private static final String START_TIME            = "startTime";
     private static final String END_TIME              = "endTime";
@@ -78,7 +82,7 @@ public class AppointmentController {
     @CrossOrigin(origins = "*")
     @GetMapping("/allAppointments")
     public JsonElement getAppointments() {
-        System.out.println("Get Appointments has been called");
+        logger.info("Get Appointments has been called");
         Iterable<CalendarEntry> all = calendarEntryRepository.findAll();
         final String s = gson.toJson(all);
 
