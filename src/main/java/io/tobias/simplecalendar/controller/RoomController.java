@@ -2,7 +2,6 @@ package io.tobias.simplecalendar.controller;
 
 import io.tobias.simplecalendar.model.CalendarEntry;
 import io.tobias.simplecalendar.model.Room;
-import io.tobias.simplecalendar.repositories.CalendarEntryRepository;
 import io.tobias.simplecalendar.repositories.RoomRepository;
 
 import com.google.gson.Gson;
@@ -13,6 +12,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,64 +34,60 @@ import java.util.Optional;
 @RequestMapping("api")
 public class RoomController {
 
+    private final Logger logger = LoggerFactory.getLogger(RoomController.class);
+
     @Autowired
     RoomRepository roomRepository;
 
-    @Autowired
-    CalendarEntryRepository calendarEntryRepository;
-
-    Gson gson = new GsonBuilder()
-    .registerTypeAdapter(Room.class, new RoomSerializer())
-    .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-    .create();
-
+    Gson gson = new GsonBuilder().registerTypeAdapter(Room.class, new RoomSerializer()).setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create();
 
 
     @CrossOrigin(origins = "*")
     @GetMapping("/allRooms")
     public JsonElement allRooms() {
         Iterable<Room> all = roomRepository.findAll();
-        System.out.println("Rooms have been retrieved");
+        logger.info("Rooms have been retrieved");
         return JsonParser.parseString(gson.toJson(all));
     }
+
 
     @CrossOrigin(origins = "*")
     @PostMapping("/createRoom")
     public ResponseEntity<Room> createRoom(@RequestBody Room room) {
         ResponseEntity<Room> response;
-        try {
-            if (room.getRoomId() != null) {
-                throw new IllegalArgumentException("Illegal input for created room. ID must not be dictated from client. ID is defined in backend.");
-            }
-            if (room.getName() == null || room.getName().length() == 0) {
-                throw new IllegalArgumentException("Illegal input for created room. Room name must be set and not null.");
-            }
-            roomRepository.save(room);
-            response = new ResponseEntity<>(room, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e){
-            e.printStackTrace();
-            response = new ResponseEntity<>(room, HttpStatus.UNPROCESSABLE_ENTITY);
+
+        if (room.getRoomId() != null) {
+            throw new IllegalArgumentException("Illegal input for created room. ID must not be dictated from client. ID is defined in backend.");
         }
+        if (room.getName() == null || room.getName().length() == 0) {
+            throw new IllegalArgumentException("Illegal input for created room. Room name must be set and not null.");
+        }
+        roomRepository.save(room);
+        response = new ResponseEntity<>(room, HttpStatus.CREATED);
+
         return response;
     }
 
+
     @CrossOrigin(origins = "*")
     @DeleteMapping("/deleteRoom/{id}")
-    public void  deleteRoom(@PathVariable int id){
+    public void deleteRoom(@PathVariable int id) {
         Optional<Room> byId = roomRepository.findById(id);
-        if (byId.isPresent()){
+        if (byId.isPresent()) {
             final Room room = byId.get();
             roomRepository.delete(room);
         }
     }
 
+
     @CrossOrigin(origins = "*")
     @GetMapping("/getRoomById/{id}")
-    public JsonElement getRoomById(@PathVariable int id){
+    public JsonElement getRoomById(@PathVariable int id) {
         Optional<Room> byId = roomRepository.findById(id);
         if (byId.isPresent()) {
             return JsonParser.parseString(gson.toJson(byId.get()));
-        } else {
+        }
+        else {
             JsonObject obj = new JsonObject();
             obj.add("msg", gson.toJsonTree("no room found"));
             return obj;
@@ -100,9 +97,9 @@ public class RoomController {
 
     private class RoomSerializer implements JsonSerializer<Room> {
 
-        private static final String ID = "id";
-        private static final String START_TIME = "startTime";
-        private static final String END_TIME = "endTime";
+        private static final String ID           = "id";
+        private static final String START_TIME   = "startTime";
+        private static final String END_TIME     = "endTime";
         private static final String APPOINTMENTS = "appointments";
 
 
@@ -131,6 +128,6 @@ public class RoomController {
             room.add(APPOINTMENTS, appointmentsJson);
 
             return room;
-           }
+        }
     }
 }
