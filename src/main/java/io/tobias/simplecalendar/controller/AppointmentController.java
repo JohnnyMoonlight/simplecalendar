@@ -33,8 +33,9 @@ import java.util.Optional;
 @RequestMapping("api")
 public class AppointmentController {
 
-    private Logger logger = LoggerFactory.getLogger(AppointmentController.class);
+    private             Logger logger     = LoggerFactory.getLogger(AppointmentController.class);
 
+    private static final String DATEFORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
     private static final String START_TIME            = "startTime";
     private static final String END_TIME              = "endTime";
     private static final String ROOM                  = "room";
@@ -45,7 +46,7 @@ public class AppointmentController {
     private static final String IS_RECURRING_EVENT    = "isRecurringEvent";
     private static final String RECURRING_CYCLE       = "recurringCycle";
 
-    final Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").registerTypeAdapter(CalendarEntry.class, new CalendarEntrySerializer()).create();
+    final Gson gson = new GsonBuilder().setDateFormat(DATEFORMAT).registerTypeAdapter(CalendarEntry.class, new CalendarEntrySerializer()).create();
 
     @Autowired
     CalendarEntryRepository calendarEntryRepository;
