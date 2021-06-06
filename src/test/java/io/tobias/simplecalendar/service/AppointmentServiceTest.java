@@ -41,4 +41,9 @@ class AppointmentServiceTest {
         assertEquals(secondAppointment, calendarEntry.getStartTime());
     }
 
+    @Test
+    void testAddDays() {
+        assertEquals(secondAppointment, appointmentService.addDays(startDate, 7));
+    }
+
 }
