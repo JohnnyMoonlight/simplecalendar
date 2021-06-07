@@ -6,4 +6,4 @@ RUN gradle build
 FROM gcr.io/distroless/java:11
 COPY --from=build /home/gradle/build/libs/simplecalendar-0.0.1-SNAPSHOT.jar /home/gradle/app/main.jar
 WORKDIR /home/gradle/app/
-CMD java -jar main.jar
+CMD main.jar
