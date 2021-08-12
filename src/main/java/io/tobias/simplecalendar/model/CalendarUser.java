@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.Collection;
@@ -13,6 +14,7 @@ import java.util.Date;
 
 
 @Entity
+@Table(name = "USERS")
 public class CalendarUser implements UserDetails {
 
     @Id
@@ -21,14 +23,23 @@ public class CalendarUser implements UserDetails {
     private String  password;
     private String  username;
     private String  email;
-    private boolean activated;
+    private String  roles;
+    private boolean enabled;
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     private Date    registrationDate;
-
-
     public CalendarUser() {
 
+    }
+
+
+    public String getRoles() {
+        return roles;
+    }
+
+
+    public void setRoles(String roles) {
+        this.roles = roles;
     }
 
 
@@ -52,13 +63,13 @@ public class CalendarUser implements UserDetails {
     }
 
 
-    public boolean isActivated() {
-        return activated;
+    public boolean isEnabled() {
+        return enabled;
     }
 
 
-    public void setActivated(boolean activated) {
-        this.activated = activated;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
 
@@ -117,9 +128,4 @@ public class CalendarUser implements UserDetails {
         return false;
     }
 
-
-    @Override
-    public boolean isEnabled() {
-        return false;
-    }
 }

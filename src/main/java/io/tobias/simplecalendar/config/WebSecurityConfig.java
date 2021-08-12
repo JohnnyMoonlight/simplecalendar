@@ -1,4 +1,6 @@
 package io.tobias.simplecalendar.config;
+import io.tobias.simplecalendar.service.CalendarUserDetailsService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -9,9 +11,10 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 import javax.sql.DataSource;
 
 
@@ -20,7 +23,7 @@ import javax.sql.DataSource;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    UserDetailsService userDetailsService;
+    CalendarUserDetailsService userDetailsService;
     @Value("${calendarUser.adminusername}")
     private String USER;
     @Value("${calendarUser.adminpassword}")
@@ -40,21 +43,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
-    @Override
-    protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(authProvider()).jdbcAuthentication().dataSource(dataSource());
+    @Autowired
+    protected void initialize(final AuthenticationManagerBuilder authenticationManagerBuilder, DataSource dataSource) throws Exception {
+        authenticationManagerBuilder.jdbcAuthentication().passwordEncoder(encoder()).dataSource(dataSource)
+                .usersByUsernameQuery(
+                "SELECT username, password, enabled FROM users WHERE username=?")
+                .authoritiesByUsernameQuery(
+                "SELECT username, roles FROM users WHERE username=?");;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.
-                authorizeRequests().
-                antMatchers("/**createAppointment**/", "/**createRoom**/", "/**deleteRoom**/").
-                authenticated().and().formLogin().loginPage("/login.html")
-                .loginProcessingUrl("/perform_login")
-                .defaultSuccessUrl("/", true)
-                .permitAll().and().logout().permitAll();
+        http.authorizeRequests().anyRequest().authenticated().and().formLogin().permitAll();
     }
+
+    @Bean
+    UserDetailsManager users(DataSource dataSource) {
+        JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
+        return users;
+    }
+
+
+
 
     @Bean
     DaoAuthenticationProvider authProvider() {
@@ -66,7 +76,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder encoder() {
-        return new BCryptPasswordEncoder(10);
+        final int passwordStrength = 10;
+        return new BCryptPasswordEncoder(passwordStrength);
     }
 
 }
