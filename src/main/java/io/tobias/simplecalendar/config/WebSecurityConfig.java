@@ -45,11 +45,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     protected void initialize(final AuthenticationManagerBuilder authenticationManagerBuilder, DataSource dataSource) throws Exception {
-        authenticationManagerBuilder.jdbcAuthentication().passwordEncoder(encoder()).dataSource(dataSource)
-                .usersByUsernameQuery(
-                "SELECT username, password, enabled FROM users WHERE username=?")
-                .authoritiesByUsernameQuery(
-                "SELECT username, roles FROM users WHERE username=?");;
+        authenticationManagerBuilder
+        .jdbcAuthentication()
+        .passwordEncoder(encoder()).dataSource(dataSource)
+        .usersByUsernameQuery("SELECT username, password, enabled FROM users WHERE username=?")
+        .authoritiesByUsernameQuery("SELECT username, roles FROM users WHERE username=?");
     }
 
     @Override
@@ -76,7 +76,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder encoder() {
-        final int passwordStrength = 10;
+        final int passwordStrength = 12;
         return new BCryptPasswordEncoder(passwordStrength);
     }
 
