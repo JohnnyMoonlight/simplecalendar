@@ -8,6 +8,7 @@ build/
 /nginx/
 
 ### derby ###
+/db
 derby.log
 
 ### STS ###
