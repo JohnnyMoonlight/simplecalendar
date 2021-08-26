@@ -23,6 +23,8 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    public static final String DEFAULT_BASE_URL = "/#/";
+    public static final String API_URL_MATCHER  = "/api/**";
     @Autowired
     CalendarUserDetailsService userDetailsService;
     @Value("${calendarUser.adminusername}")
@@ -62,17 +64,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity securityConfigBuilder) throws Exception {
         securityConfigBuilder
         .authorizeRequests()
-        .antMatchers(HttpMethod.GET, "/api/**").permitAll()
-        .antMatchers("/api/**").authenticated()
+        .antMatchers(HttpMethod.GET, API_URL_MATCHER).permitAll()
+        .antMatchers(API_URL_MATCHER).authenticated()
         .and()
         .formLogin().loginPage("/login.html")
         .loginProcessingUrl("/login").permitAll()
-        .defaultSuccessUrl("/#/")
+        .defaultSuccessUrl(DEFAULT_BASE_URL)
         .and()
-        .logout().logoutUrl("/logout").permitAll().and().csrf().disable();
+        .logout().logoutSuccessUrl(DEFAULT_BASE_URL).logoutUrl("/logout").permitAll().and().csrf().disable();
 
         securityConfigBuilder.authorizeRequests()
-        .antMatchers("/css", "/js").permitAll()        ;
+        .antMatchers("/css/", "/js/").permitAll()        ;
     }
 
 
