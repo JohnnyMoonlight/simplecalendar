@@ -83,7 +83,7 @@ public class AppointmentController {
     @CrossOrigin(origins = "*")
     @GetMapping("/allAppointments")
     public JsonElement getAppointments() {
-        logger.info("Get Appointments has been called");
+        logger.debug("Get Appointments has been called");
         Iterable<CalendarEntry> all = calendarEntryRepository.findAll();
         final String s = gson.toJson(all);
 

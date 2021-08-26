@@ -46,7 +46,7 @@ public class RoomController {
     @GetMapping("/allRooms")
     public JsonElement allRooms() {
         Iterable<Room> all = roomRepository.findAll();
-        logger.info("Rooms have been retrieved");
+        logger.debug("Rooms have been retrieved");
         return JsonParser.parseString(gson.toJson(all));
     }
 
